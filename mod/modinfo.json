@@ -1,0 +1,15 @@
+{
+  "id": "OneLetterShor.CrawlTurnDieCompat",
+  "name": "Crawl Turn Die Compat",
+  "version": "1.0.0",
+  "hide_version": false,
+  "target_game_version": "v1.11.6",
+  "authors": "OneLetterShor",
+  "description": "Allows you to be revived by Crawl Turn Die users. Required for Crawl Turn Die.",
+  "youtube_trailer_id": "",
+  "requirements": [],
+  "requirements_names": [],
+  "tags": [ "Base", "Downpour", "Watcher" ],
+  "priorities": [ "OneLetterShor.CrawlTurnDie", "henpemaz_rainmeadow" ],
+  "checksum_override_version": false
+}
