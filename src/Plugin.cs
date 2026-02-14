@@ -1,6 +1,5 @@
 using System.Security.Permissions;
 using BepInEx;
-using OneLetterShor.CrawlTurnDieCompat;
 using Logger_ = OneLetterShor.CrawlTurnDieCompat.Logger;
 using LogLevel = BepInEx.Logging.LogLevel;
 using SecurityAction = System.Security.Permissions.SecurityAction;

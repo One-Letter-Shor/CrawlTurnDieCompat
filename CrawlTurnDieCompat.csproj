@@ -18,9 +18,8 @@
         <Reference Include="Microsoft.CSharp" />
         <Reference Include="System.Data" />
         <Reference Include="System.Xml" />
-    </ItemGroup>
-    <ItemGroup>
         <Reference Include="lib/*.dll" Private="False" />
+        <PackageReference Include="Hafner.Compatibility.NullableReferenceTypeAttributes" Version="1.0.0" />
     </ItemGroup>
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
         <Copy

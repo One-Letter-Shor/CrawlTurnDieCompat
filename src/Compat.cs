@@ -5,7 +5,7 @@ namespace OneLetterShor.CrawlTurnDieCompat;
 public static class Compat
 {
     public const string 
-        CrawlTurnDieGuid = "OneLetterShor.CrawlTurnDie",
+        CrawlTurnDieGuid = CrawlTurnDie.Plugin.CompiledGuid,
         RainMeadowGuid = "henpemaz_rainmeadow";
     public static SoftDependencies ActiveSoftDependencies { get; internal set; } = SoftDependencies.None;
     public static GameMode ActiveGameMode { get; internal set; } = GameMode.None;
@@ -44,7 +44,7 @@ public static class Compat
         
         if (IsRainMeadowEnabled)                                                             ActiveGameMode = RainMeadowGetActiveGameMode();
         else if (IsCrawlTurnDieEnabled || ActiveSoftDependencies == SoftDependencies.None)   ActiveGameMode = VanillaGetActiveGameMode();
-        else throw Logger.Exception(new InvalidOperationException($"Unrecognized or invalid {nameof(SoftDependencies)} value. value: {ActiveSoftDependencies}"));
+        else throw new InvalidOperationException($"Unrecognized or invalid {nameof(SoftDependencies)} value. value: {ActiveSoftDependencies}");
         
         OnActiveGameModeChanged(game, processManager);
         
@@ -56,7 +56,7 @@ public static class Compat
             {
                 StoryGameSession => GameMode.VanillaStory,
                 ArenaGameSession => GameMode.VanillaArena,
-                _ => throw Logger.Exception(new InvalidOperationException($"Unrecognized or invalid {nameof(SoftDependencies)} value. value: {ActiveSoftDependencies}"))
+                _ => throw new InvalidOperationException($"Unrecognized or invalid {nameof(SoftDependencies)} value. value: {ActiveSoftDependencies}")
             };
         }
         
@@ -69,7 +69,7 @@ public static class Compat
                 StoryGameMode =>       GameMode.RainMeadowStory,
                 ArenaOnlineGameMode => GameMode.RainMeadowArena,
                 MeadowGameMode =>      GameMode.RainMeadowMeadow,
-                _ => throw Logger.Exception(new InvalidOperationException($"Unrecognized or invalid {nameof(OnlineGameMode)} type. type: {OnlineManager.lobby.gameMode.GetType()}"))
+                _ => throw new InvalidOperationException($"Unrecognized or invalid {nameof(OnlineGameMode)} type. type: {OnlineManager.lobby.gameMode.GetType()}")
             };
         }
     }

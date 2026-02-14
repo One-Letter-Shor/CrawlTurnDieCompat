@@ -6,4 +6,5 @@ global using System.Reflection;
 global using OneLetterShor;
 global using OneLetterShor.CrawlTurnDieCompat;
 global using UnityEngine;
+global using static OneLetterShor.CrawlTurnDieCompat.Assertions;
 global using Logger = OneLetterShor.CrawlTurnDieCompat.Logger;

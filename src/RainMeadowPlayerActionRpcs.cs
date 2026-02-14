@@ -46,14 +46,13 @@ public static class RainMeadowPlayerActionRpcs
             Game = game;
     }
     
-    public static void BroadcastInRoom(OnlinePhysicalObject target, Delegate softRpc, Delegate? rpc, object?[] softRpcArgs, object?[]? rpcArgs)
+    public static void BroadcastInRoom(OnlinePhysicalObject target, Delegate softRpc, object?[] softRpcArgs, Delegate? rpc=null, object?[]? rpcArgs=null)
     {
         softRpcArgs = [..softRpcArgs];
         
-        if (softRpc == (Delegate)ExplodeSoftRpc && !RainMeadowPlayerNotifier.OnlinePlayersWithCtdc.Contains(target.roomSession.owner))
+        if (softRpc == (Delegate)ExplodeSoftRpc && !RainMeadowPlayerNotifier.CtdcOPlayers.Contains(target.roomSession.owner))
         {
-            if (rpc is null) throw Logger.Exception(new ArgumentNullException(nameof(rpc), "If sending explode rpcs, hard rpc related data must not be null."));
-            if (rpcArgs is null) throw Logger.Exception(new ArgumentNullException(nameof(rpcArgs), "If sending explode rpcs, hard rpc related data must not be null."));
+            if (rpc is null) throw new ArgumentNullException(nameof(rpc), "If sending explode rpcs, hard rpc related data must not be null.");
             
             _ = ExplodesToIgnoreByOPlayer.TryGetValue(target.roomSession.owner, out int count);
             ExplodesToIgnoreByOPlayer[target.roomSession.owner] = count + 1;
@@ -64,7 +63,7 @@ public static class RainMeadowPlayerActionRpcs
         }
         
         foreach (OnlinePlayer oPlayer in target.roomSession.participants.Where(oPlayer => !oPlayer.isMe)) {
-            if (RainMeadowPlayerNotifier.OnlinePlayersWithCtdc.Contains(oPlayer))
+            if (RainMeadowPlayerNotifier.CtdcOPlayers.Contains(oPlayer))
                 oPlayer.InvokeRPC(softRpc, softRpcArgs!);
             else
             {
@@ -150,7 +149,7 @@ public static class RainMeadowPlayerActionRpcs
         
         if (
             player is null ||
-            !opo.owner.isMe && !RainMeadowPlayerNotifier.OnlinePlayersWithCtdc.Contains(opo.owner))
+            !opo.owner.isMe && !RainMeadowPlayerNotifier.CtdcOPlayers.Contains(opo.owner))
             return;
         
         player.playerState.alive = true;
@@ -185,24 +184,17 @@ public static class RainMeadowPlayerActionRpcs
     
     private static void IL_Player_PyroDeath(ILContext il) // TODO: A better solution is to il hook the delegate rain meadow emits, rather than skipping over the emitted il from rain meadow.
     {
-        try
-        {
-            ILCursor cursor = new ILCursor(il);
-            ILLabel skipRainMeadowsIL = il.DefineLabel();
-            
-            cursor.EmitDelegate(() => ShouldSkipRainMeadowPyroDeathIL);
-            cursor.Emit(OpCodes.Brtrue, skipRainMeadowsIL);
-            
-            cursor.GotoNext(MoveType.After,
-                c => c.MatchRet()
-            );
-            
-            cursor.MarkLabel(skipRainMeadowsIL);
-        }
-        catch (Exception exception)
-        {
-            throw Logger.Exception(exception);
-        }
+        ILCursor cursor = new ILCursor(il);
+        ILLabel skipRainMeadowsIL = il.DefineLabel();
+        
+        cursor.EmitDelegate(() => ShouldSkipRainMeadowPyroDeathIL);
+        cursor.Emit(OpCodes.Brtrue, skipRainMeadowsIL);
+        
+        cursor.GotoNext(MoveType.After,
+            c => c.MatchRet()
+        );
+        
+        cursor.MarkLabel(skipRainMeadowsIL);
     }
     
     private static void On_RainMeadow_OnlinePhysicalObject_Explode(Action<OnlinePhysicalObject, Vector2> orig, OnlinePhysicalObject opo, Vector2 pos)
